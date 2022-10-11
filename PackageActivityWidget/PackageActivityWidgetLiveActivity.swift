@@ -13,8 +13,8 @@ struct PackageActivityWidgetAttributes: ActivityAttributes {
     
     public struct ContentState: Codable, Hashable {
         var statusList: [StatusList]
-        var date: Date
-        var time: Date
+        var date: String
+        var time: String
     }
 
     var company: String
@@ -39,7 +39,7 @@ struct PackageActivityWidgetLiveActivity: Widget {
     
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: PackageActivityWidgetAttributes.self) { context in
-            VStack {
+            VStack(alignment: .leading, spacing: 10) {
                 HStack {
                     Text(context.attributes.company)
                         .font(.title2)
@@ -47,6 +47,13 @@ struct PackageActivityWidgetLiveActivity: Widget {
                     Spacer()
                     Text(context.state.statusList.last?.status ?? notRegistered)
                         .font(.title2)
+                }
+                
+                HStack {
+                    Spacer()
+                    Text("\(context.state.date) \(context.state.time)")
+                        .font(.callout)
+                        .foregroundColor(Color(.secondaryLabel))
                 }
                 .padding(.bottom)
                 

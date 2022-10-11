@@ -23,6 +23,14 @@
 		9A17A58B28F1DB1200499E26 /* PackageActivityWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 9A17A58728F1DB1100499E26 /* PackageActivityWidget.intentdefinition */; };
 		9A17A58C28F1DB1200499E26 /* PackageActivityWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 9A17A58728F1DB1100499E26 /* PackageActivityWidget.intentdefinition */; };
 		9A17A58F28F1DB1200499E26 /* PackageActivityWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9A17A57A28F1DB1100499E26 /* PackageActivityWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		9A7F517228F5403E005ABB9A /* ItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7F517128F5403E005ABB9A /* ItemView.swift */; };
+		9A7F517528F54061005ABB9A /* StatusModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7F517428F54061005ABB9A /* StatusModel.swift */; };
+		9A7F517728F5406D005ABB9A /* AvtivityModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7F517628F5406D005ABB9A /* AvtivityModel.swift */; };
+		9A7F517928F54089005ABB9A /* AddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7F517828F54089005ABB9A /* AddView.swift */; };
+		9A7F517B28F54E5F005ABB9A /* DetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7F517A28F54E5F005ABB9A /* DetailsView.swift */; };
+		9A7F517D28F54F1B005ABB9A /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7F517C28F54F1B005ABB9A /* Globals.swift */; };
+		9A7F517F28F56AA8005ABB9A /* PackageLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7F517E28F56AA8005ABB9A /* PackageLists.swift */; };
+		9A7F518228F5825E005ABB9A /* ProgressIndicators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7F518128F5825E005ABB9A /* ProgressIndicators.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +91,14 @@
 		9A17A58728F1DB1100499E26 /* PackageActivityWidget.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = PackageActivityWidget.intentdefinition; sourceTree = "<group>"; };
 		9A17A58828F1DB1200499E26 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9A17A58A28F1DB1200499E26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9A7F517128F5403E005ABB9A /* ItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemView.swift; sourceTree = "<group>"; };
+		9A7F517428F54061005ABB9A /* StatusModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusModel.swift; sourceTree = "<group>"; };
+		9A7F517628F5406D005ABB9A /* AvtivityModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvtivityModel.swift; sourceTree = "<group>"; };
+		9A7F517828F54089005ABB9A /* AddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddView.swift; sourceTree = "<group>"; };
+		9A7F517A28F54E5F005ABB9A /* DetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsView.swift; sourceTree = "<group>"; };
+		9A7F517C28F54F1B005ABB9A /* Globals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Globals.swift; sourceTree = "<group>"; };
+		9A7F517E28F56AA8005ABB9A /* PackageLists.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageLists.swift; sourceTree = "<group>"; };
+		9A7F518128F5825E005ABB9A /* ProgressIndicators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressIndicators.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +161,7 @@
 		9A17A54628F1CF6F00499E26 /* MyPackage */ = {
 			isa = PBXGroup;
 			children = (
+				9A7F517328F54048005ABB9A /* Models */,
 				9A17A57328F1CFE800499E26 /* UseCase */,
 				9A17A57228F1CFE100499E26 /* Domains */,
 				9A17A57128F1CFD700499E26 /* Views */,
@@ -152,6 +169,7 @@
 				9A17A54928F1CF6F00499E26 /* ContentView.swift */,
 				9A17A54B28F1CF7000499E26 /* Assets.xcassets */,
 				9A17A54D28F1CF7000499E26 /* Preview Content */,
+				9A7F517C28F54F1B005ABB9A /* Globals.swift */,
 			);
 			path = MyPackage;
 			sourceTree = "<group>";
@@ -184,6 +202,9 @@
 		9A17A57128F1CFD700499E26 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				9A7F518028F58248005ABB9A /* Parts */,
+				9A7F517828F54089005ABB9A /* AddView.swift */,
+				9A7F517A28F54E5F005ABB9A /* DetailsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -198,6 +219,7 @@
 		9A17A57328F1CFE800499E26 /* UseCase */ = {
 			isa = PBXGroup;
 			children = (
+				9A7F517E28F56AA8005ABB9A /* PackageLists.swift */,
 			);
 			path = UseCase;
 			sourceTree = "<group>";
@@ -222,6 +244,24 @@
 				9A17A58A28F1DB1200499E26 /* Info.plist */,
 			);
 			path = PackageActivityWidget;
+			sourceTree = "<group>";
+		};
+		9A7F517328F54048005ABB9A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				9A7F517428F54061005ABB9A /* StatusModel.swift */,
+				9A7F517628F5406D005ABB9A /* AvtivityModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		9A7F518028F58248005ABB9A /* Parts */ = {
+			isa = PBXGroup;
+			children = (
+				9A7F517128F5403E005ABB9A /* ItemView.swift */,
+				9A7F518128F5825E005ABB9A /* ProgressIndicators.swift */,
+			);
+			path = Parts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -385,9 +425,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A7F517928F54089005ABB9A /* AddView.swift in Sources */,
+				9A7F517528F54061005ABB9A /* StatusModel.swift in Sources */,
 				9A17A58C28F1DB1200499E26 /* PackageActivityWidget.intentdefinition in Sources */,
 				9A17A54A28F1CF6F00499E26 /* ContentView.swift in Sources */,
 				9A17A54828F1CF6F00499E26 /* MyPackageApp.swift in Sources */,
+				9A7F517B28F54E5F005ABB9A /* DetailsView.swift in Sources */,
+				9A7F517228F5403E005ABB9A /* ItemView.swift in Sources */,
+				9A7F517728F5406D005ABB9A /* AvtivityModel.swift in Sources */,
+				9A7F518228F5825E005ABB9A /* ProgressIndicators.swift in Sources */,
+				9A7F517F28F56AA8005ABB9A /* PackageLists.swift in Sources */,
+				9A7F517D28F54F1B005ABB9A /* Globals.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
