@@ -6,28 +6,41 @@
 //
 
 import SwiftUI
+import ActivityKit
 
 struct DetailsView: View {
     
     @ObservedObject private var packageLists = PackageLists.shared
-    var packageInfo: Response
+    @ObservedObject private var pinnedItemAvailability = PinnedItemAvailability.shared
+    var item: PackageInfo
+    @State var isDialogShown = false
     
     var body: some View {
         ScrollView {
             VStack {
-                Text(packageInfo.companyNameJp)
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .padding([.horizontal, .top])
-                
                 HStack {
-                    Text("Tracking Number:")
+                    Text(item.info.companyNameJp)
+                        .font(.title)
+                        .fontWeight(.bold)
                     Spacer()
-                    Text(String(packageInfo.number))
+                    Button(action: {
+                        isDialogShown.toggle()
+                    }) {
+                        Image(systemName: item.isPinned ? "pin.fill" : "pin")
+                            .foregroundColor(item.isPinned ? Color(.systemGreen) : Color(.label))
+                            .font(.title2)
+                    }
                 }
                 .padding([.horizontal, .top])
                 
-                ForEach(packageInfo.statusList, id: \.self) { status in
+                HStack {
+                    Spacer()
+                    Text("Tracking Number: \(String(item.info.number))")
+                        .foregroundColor(Color(.secondaryLabel))
+                }
+                .padding([.horizontal, .top])
+                
+                ForEach(item.info.statusList, id: \.self) { status in
                     VStack(alignment: .leading, spacing: 15) {
                         HStack {
                             Text(status.status)
@@ -50,12 +63,49 @@ struct DetailsView: View {
                     .shadow(color:  Color(.sRGBLinear, white: 0, opacity: 0.1),radius: 10)
                 }
             }
-        }.navigationBarTitle("Tracking Details", displayMode: .inline)
+        }
+        .navigationBarTitle("Tracking Details", displayMode: .inline)
+        .alert(isPresented: $isDialogShown) {
+            Alert(
+                title: Text("Note"),
+                message: Text("Pinned package will be shown up as a Live Activity on Lock Screen"),
+                dismissButton: .default(Text("OK"), action: {
+                    if !pinnedItemAvailability.available {
+                        packageLists.updatePinState(id: item.id, isPinned: true)
+                        pinnedItemAvailability.available = true
+                        
+                        // Set Live Activity
+                        let packageActivityWidgetAttributes = PackageActivityWidgetAttributes(
+                            company: packageLists.items[0].info.companyNameJp,
+                            type: packageLists.items[0].info.itemType
+                        )
+
+                        let initialContentState = PackageActivityWidgetAttributes.ContentState(
+                            statusList: packageLists.items[0].info.statusList,
+                            date: packageLists.items[0].info.statusList.last?.date ?? "",
+                            time: packageLists.items[0].info.statusList.last?.time ?? ""
+                        )
+
+                        do {
+                            let deliveryActivity = try Activity<PackageActivityWidgetAttributes>.request(
+                                attributes: packageActivityWidgetAttributes,
+                                contentState: initialContentState,
+                                pushType: nil
+                            )
+                            
+                            print("Requested your package delivery Live Activity \(deliveryActivity.id)")
+                        } catch (let error) {
+                            print("Error requesting your package delivery Live Activity \(error.localizedDescription)")
+                        }
+                    }
+                })
+            )
+        }
     }
 }
 
 struct DetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        DetailsView(packageInfo: Response(number: 0, itemType: "", companyName: "", companyNameJp: "", statusList: []))
+        DetailsView(item: PackageInfo(isPinned: false, info: Response(number: 0, itemType: "", companyName: "", companyNameJp: "", statusList: [])))
     }
 }

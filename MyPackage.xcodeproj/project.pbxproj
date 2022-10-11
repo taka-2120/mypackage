@@ -31,6 +31,7 @@
 		9A7F517D28F54F1B005ABB9A /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7F517C28F54F1B005ABB9A /* Globals.swift */; };
 		9A7F517F28F56AA8005ABB9A /* PackageLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7F517E28F56AA8005ABB9A /* PackageLists.swift */; };
 		9A7F518228F5825E005ABB9A /* ProgressIndicators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7F518128F5825E005ABB9A /* ProgressIndicators.swift */; };
+		9A7F518428F5FC53005ABB9A /* PinnedItemAvailability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7F518328F5FC53005ABB9A /* PinnedItemAvailability.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,6 +100,7 @@
 		9A7F517C28F54F1B005ABB9A /* Globals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Globals.swift; sourceTree = "<group>"; };
 		9A7F517E28F56AA8005ABB9A /* PackageLists.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageLists.swift; sourceTree = "<group>"; };
 		9A7F518128F5825E005ABB9A /* ProgressIndicators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressIndicators.swift; sourceTree = "<group>"; };
+		9A7F518328F5FC53005ABB9A /* PinnedItemAvailability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinnedItemAvailability.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -220,6 +222,7 @@
 			isa = PBXGroup;
 			children = (
 				9A7F517E28F56AA8005ABB9A /* PackageLists.swift */,
+				9A7F518328F5FC53005ABB9A /* PinnedItemAvailability.swift */,
 			);
 			path = UseCase;
 			sourceTree = "<group>";
@@ -433,6 +436,7 @@
 				9A7F517B28F54E5F005ABB9A /* DetailsView.swift in Sources */,
 				9A7F517228F5403E005ABB9A /* ItemView.swift in Sources */,
 				9A7F517728F5406D005ABB9A /* AvtivityModel.swift in Sources */,
+				9A7F518428F5FC53005ABB9A /* PinnedItemAvailability.swift in Sources */,
 				9A7F518228F5825E005ABB9A /* ProgressIndicators.swift in Sources */,
 				9A7F517F28F56AA8005ABB9A /* PackageLists.swift in Sources */,
 				9A7F517D28F54F1B005ABB9A /* Globals.swift in Sources */,

@@ -22,3 +22,9 @@ struct Response: Codable {
     var companyNameJp: String
     var statusList: [StatusList]
 }
+
+struct PackageInfo {
+    var id = UUID()
+    var isPinned: Bool
+    var info: Response
+}

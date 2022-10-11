@@ -10,6 +10,7 @@ import ActivityKit
 
 struct ContentView: View {
     @ObservedObject private var packageLists = PackageLists.shared
+    @ObservedObject private var pinnedItemAvailability = PinnedItemAvailability.shared
     
     @State private var isAddSheetShown = false
     @State private var isInvaildUrl = false
@@ -41,16 +42,17 @@ struct ContentView: View {
         }
         .onAppear() {
             Task {
-                if await packageLists.readStatusJsonAndCanContinue() {
+                let canContinue = await packageLists.readStatusJsonAndCanContinue()
+                if (canContinue && pinnedItemAvailability.available) {
                     let packageActivityWidgetAttributes = PackageActivityWidgetAttributes(
-                        company: packageLists.items[0].companyNameJp,
-                        type: packageLists.items[0].itemType
+                        company: packageLists.items[0].info.companyNameJp,
+                        type: packageLists.items[0].info.itemType
                     )
 
                     let initialContentState = PackageActivityWidgetAttributes.ContentState(
-                        statusList: packageLists.items[0].statusList,
-                        date: packageLists.items[0].statusList.last?.date ?? "",
-                        time: packageLists.items[0].statusList.last?.time ?? ""
+                        statusList: packageLists.items[0].info.statusList,
+                        date: packageLists.items[0].info.statusList.last?.date ?? "",
+                        time: packageLists.items[0].info.statusList.last?.time ?? ""
                     )
 
                     do {
