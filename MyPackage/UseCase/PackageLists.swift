@@ -6,19 +6,21 @@
 //
 
 import Foundation
+import Combine
 
 class PackageLists: ObservableObject {
     static let shared = PackageLists()
     private init() {}
     
-    @Published var codes = ["394993519045"]
-    @Published var items = [PackageInfo]()
+//    @Published var codes = ["394993519045"]
+    @Published var packages = [Package(info: PackageInfo(isPinned: false, code: "394993519045"), response: Response(number: 0, itemType: "", companyName: "", companyNameJp: "", statusList: []))]
+    var subscriptions = Set<AnyCancellable>()
     
     func readStatusJsonAndCanContinue() async -> Bool {
-        items.removeAll()
         
-        for i in 0 ..< codes.count {
-            let urlStr = "https://trackingjp.work/api/v1/tracking/\(codes[i])"
+        for package in packages {
+            let info = package.info
+            let urlStr = "https://trackingjp.work/api/v1/tracking/\(info.code)"
             
             guard let url = URL(string: urlStr) else {
                 return false
@@ -28,9 +30,9 @@ class PackageLists: ObservableObject {
                 let (data, _) = try await URLSession.shared.data(from: url)
 
                 if let decodedResponse = try? JSONDecoder().decode(Response.self, from: data) {
-                    items.append(PackageInfo(isPinned: false, info: decodedResponse))
+                    updateResponse(id: package.id, newResponse: decodedResponse)
                     
-                    if items[i].isPinned {
+                    if package.info.isPinned {
                         PinnedItemAvailability.shared.available = true
                     }
                 }
@@ -41,11 +43,19 @@ class PackageLists: ObservableObject {
         return true
     }
     
-    func updatePinState(id: UUID, isPinned: Bool) {
-        let index = items.firstIndex(where: {$0.id == id})
+    func updateResponse(id: UUID, newResponse: Response) {
+        let index = packages.firstIndex(where: {$0.id == id})
         
         if index != nil {
-            items[index!].isPinned = isPinned
+            packages[index!].response = newResponse
+        }
+      }
+    
+    func updatePinState(id: UUID, isPinned: Bool) {
+        let index = packages.firstIndex(where: {$0.id == id})
+        
+        if index != nil {
+            packages[index!].info.isPinned = isPinned
         }
     }
 }

@@ -24,7 +24,13 @@ struct Response: Codable {
 }
 
 struct PackageInfo {
-    var id = UUID()
     var isPinned: Bool
-    var info: Response
+    var code: String
+}
+
+
+struct Package {
+    var id = UUID()
+    var info: PackageInfo
+    var response: Response
 }

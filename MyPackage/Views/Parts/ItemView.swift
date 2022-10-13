@@ -9,27 +9,26 @@ import SwiftUI
 
 struct ItemView: View {
     
-    @Binding var items: [PackageInfo]
-    @Binding var codes: [String]
+    @Binding var packages: [Package]
     var i: Int
     
     var body: some View {
-        let date = items[i].info.statusList.last?.date ?? ""
-        let time = items[i].info.statusList.last?.time ?? "N/A"
-        let isReceived = items[i].info.statusList.contains(where: {$0.status.contains(received)})
+        let date = packages[i].response.statusList.last?.date ?? ""
+        let time = packages[i].response.statusList.last?.time ?? "N/A"
+        let isReceived = packages[i].response.statusList.contains(where: {$0.status.contains(received)})
         
-        NavigationLink(destination: DetailsView(item: items[i])) {
+        NavigationLink(destination: DetailsView(package: packages[i])) {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
-                    Text(items[i].info.companyNameJp)
+                    Text(packages[i].response.companyNameJp)
                         .font(.title2)
                         .fontWeight(.semibold)
-                    if items[i].isPinned {
+                    if packages[i].info.isPinned {
                         Image(systemName: "pin.fill")
                             .foregroundColor(Color(.systemGreen))
                     }
                     Spacer()
-                    Text(items[i].info.statusList.last?.status ?? notRegistered)
+                    Text(packages[i].response.statusList.last?.status ?? notRegistered)
                         .font(.title2)
                 }
                 
@@ -47,9 +46,9 @@ struct ItemView: View {
                     }
                     
                     // First Line
-                    if items[i].info.statusList.contains(where: {$0.status.contains(shipping)}) {
+                    if packages[i].response.statusList.contains(where: {$0.status.contains(shipping)}) {
                         PassedWay()
-                        if !items[i].info.statusList.contains(where: {$0.status.contains(carrying)}) {
+                        if !packages[i].response.statusList.contains(where: {$0.status.contains(carrying)}) {
                             Carrying()
                         }
                     } else {
@@ -57,9 +56,9 @@ struct ItemView: View {
                     }
                     
                     // Second Line
-                    if items[i].info.statusList.contains(where: {$0.status.contains(carrying)}) {
+                    if packages[i].response.statusList.contains(where: {$0.status.contains(carrying)}) {
                         PassedWay()
-                        if !items[i].info.statusList.contains(where: {$0.status.contains(delivered)}) {
+                        if !packages[i].response.statusList.contains(where: {$0.status.contains(delivered)}) {
                             Carrying()
                         }
                     } else {
@@ -67,7 +66,7 @@ struct ItemView: View {
                     }
                     
                     // Final Line
-                    if items[i].info.statusList.contains(where: {$0.status.contains(delivered)}) {
+                    if packages[i].response.statusList.contains(where: {$0.status.contains(delivered)}) {
                         PassedWay()
                     } else {
                         FutureWay()
@@ -85,6 +84,6 @@ struct ItemView: View {
 
 struct ItemView_Previews: PreviewProvider {
     static var previews: some View {
-        ItemView(items: .constant([]), codes: .constant([]), i: 0)
+        ItemView(packages: .constant([]), i: 0)
     }
 }

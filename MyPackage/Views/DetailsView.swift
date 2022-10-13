@@ -12,22 +12,22 @@ struct DetailsView: View {
     
     @ObservedObject private var packageLists = PackageLists.shared
     @ObservedObject private var pinnedItemAvailability = PinnedItemAvailability.shared
-    var item: PackageInfo
+    var package: Package
     @State var isDialogShown = false
     
     var body: some View {
         ScrollView {
             VStack {
                 HStack {
-                    Text(item.info.companyNameJp)
+                    Text(package.response.companyNameJp)
                         .font(.title)
                         .fontWeight(.bold)
                     Spacer()
                     Button(action: {
                         isDialogShown.toggle()
                     }) {
-                        Image(systemName: item.isPinned ? "pin.fill" : "pin")
-                            .foregroundColor(item.isPinned ? Color(.systemGreen) : Color(.label))
+                        Image(systemName: package.info.isPinned ? "pin.fill" : "pin")
+                            .foregroundColor(package.info.isPinned ? Color(.systemGreen) : Color(.label))
                             .font(.title2)
                     }
                 }
@@ -35,12 +35,12 @@ struct DetailsView: View {
                 
                 HStack {
                     Spacer()
-                    Text("Tracking Number: \(String(item.info.number))")
+                    Text("Tracking Number: \(String(package.response.number))")
                         .foregroundColor(Color(.secondaryLabel))
                 }
                 .padding([.horizontal, .top])
                 
-                ForEach(item.info.statusList, id: \.self) { status in
+                ForEach(package.response.statusList, id: \.self) { status in
                     VStack(alignment: .leading, spacing: 15) {
                         HStack {
                             Text(status.status)
@@ -69,35 +69,17 @@ struct DetailsView: View {
             Alert(
                 title: Text("Note"),
                 message: Text("Pinned package will be shown up as a Live Activity on Lock Screen"),
-                dismissButton: .default(Text("OK"), action: {
+                primaryButton:  .default(Text("OK"), action: {
                     if !pinnedItemAvailability.available {
-                        packageLists.updatePinState(id: item.id, isPinned: true)
+                        packageLists.updatePinState(id: package.id, isPinned: true)
                         pinnedItemAvailability.available = true
                         
                         // Set Live Activity
-                        let packageActivityWidgetAttributes = PackageActivityWidgetAttributes(
-                            company: packageLists.items[0].info.companyNameJp,
-                            type: packageLists.items[0].info.itemType
-                        )
-
-                        let initialContentState = PackageActivityWidgetAttributes.ContentState(
-                            statusList: packageLists.items[0].info.statusList,
-                            date: packageLists.items[0].info.statusList.last?.date ?? "",
-                            time: packageLists.items[0].info.statusList.last?.time ?? ""
-                        )
-
-                        do {
-                            let deliveryActivity = try Activity<PackageActivityWidgetAttributes>.request(
-                                attributes: packageActivityWidgetAttributes,
-                                contentState: initialContentState,
-                                pushType: nil
-                            )
-                            
-                            print("Requested your package delivery Live Activity \(deliveryActivity.id)")
-                        } catch (let error) {
-                            print("Error requesting your package delivery Live Activity \(error.localizedDescription)")
-                        }
+                        LiveActivityActions().setActivity()
                     }
+                }),
+                secondaryButton: .destructive(Text("Cancel"), action: {
+                    isDialogShown = false
                 })
             )
         }
@@ -106,6 +88,6 @@ struct DetailsView: View {
 
 struct DetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        DetailsView(item: PackageInfo(isPinned: false, info: Response(number: 0, itemType: "", companyName: "", companyNameJp: "", statusList: [])))
+        DetailsView(package: Package(info: PackageInfo(isPinned: false, code: ""), response: Response(number: 0, itemType: "", companyName: "", companyNameJp: "", statusList: [])))
     }
 }

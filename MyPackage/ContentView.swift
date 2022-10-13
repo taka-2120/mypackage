@@ -9,6 +9,7 @@ import SwiftUI
 import ActivityKit
 
 struct ContentView: View {
+    @Environment(\.scenePhase) var scenePhase
     @ObservedObject private var packageLists = PackageLists.shared
     @ObservedObject private var pinnedItemAvailability = PinnedItemAvailability.shared
     
@@ -18,11 +19,22 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(0 ..< packageLists.items.count, id: \.self) { i in
-                    ItemView(items: $packageLists.items, codes: $packageLists.codes, i: i)
+                ForEach(0 ..< packageLists.packages.count, id: \.self) { i in
+                    ItemView(packages: $packageLists.packages, i: i)
                 }
                 .onDelete { indexSet in
 
+                }
+            }
+            .refreshable {
+                Task {
+                    let canContinue = await packageLists.readStatusJsonAndCanContinue()
+                    
+                    if canContinue {
+                        if pinnedItemAvailability.available {
+                            
+                        }
+                    }
                 }
             }
             .navigationTitle("Packages")
@@ -40,31 +52,12 @@ struct ContentView: View {
                     .presentationDetents([.medium])
             }
         }
-        .onAppear() {
-            Task {
-                let canContinue = await packageLists.readStatusJsonAndCanContinue()
-                if (canContinue && pinnedItemAvailability.available) {
-                    let packageActivityWidgetAttributes = PackageActivityWidgetAttributes(
-                        company: packageLists.items[0].info.companyNameJp,
-                        type: packageLists.items[0].info.itemType
-                    )
-
-                    let initialContentState = PackageActivityWidgetAttributes.ContentState(
-                        statusList: packageLists.items[0].info.statusList,
-                        date: packageLists.items[0].info.statusList.last?.date ?? "",
-                        time: packageLists.items[0].info.statusList.last?.time ?? ""
-                    )
-
-                    do {
-                        let deliveryActivity = try Activity<PackageActivityWidgetAttributes>.request(
-                            attributes: packageActivityWidgetAttributes,
-                            contentState: initialContentState,
-                            pushType: nil
-                        )
-                        
-                        print("Requested your package delivery Live Activity \(deliveryActivity.id)")
-                    } catch (let error) {
-                        print("Error requesting your package delivery Live Activity \(error.localizedDescription)")
+        .onChange(of: scenePhase) { newPhase in
+            if newPhase == .active {
+                Task {
+                    let canContinue = await packageLists.readStatusJsonAndCanContinue()
+                    if (canContinue && pinnedItemAvailability.available) {
+                        LiveActivityActions().setActivity()
                     }
                 }
             }

@@ -34,12 +34,14 @@ struct AddView: View {
                             return
                         }
                         Task {
-                            packageLists.codes.append(newCode)
+                            UserDefaults.standard.set(packageLists, forKey: "Tap")
                             
-                            if await packageLists.readStatusJsonAndCanContinue() {
+                            let canContinue = await packageLists.readStatusJsonAndCanContinue()
+                            if !canContinue {
                                 isInvaildUrl = true
                                 return
                             }
+                            
                             presentationMode.wrappedValue.dismiss()
                             newCode = ""
                         }
