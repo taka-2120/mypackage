@@ -33,6 +33,8 @@ class PackageLists: ObservableObject {
     }
     
     func addPackageAndCanContinue(package: Package) async -> Bool {
+        packages.append(package)
+        
         let canContinue = await _fetchPackageStatus(package: package)
         
         if canContinue {
@@ -47,6 +49,9 @@ class PackageLists: ObservableObject {
         
         do {
             let storedObjItem = UserDefaults.standard.object(forKey: packagesInfoKey)
+            if storedObjItem == nil {
+                return
+            }
             let restoredPackagesInfo = try JSONDecoder().decode([PackageInfo].self, from: storedObjItem as! Data)
             
             for packageInfo in restoredPackagesInfo {

@@ -34,7 +34,7 @@ struct AddView: View {
                             return
                         }
                         Task {
-                            let canContinue = await packageLists.readStatusJsonAndCanContinue()
+                            let canContinue = await packageLists.addPackageAndCanContinue(package: Package(info: PackageInfo(isPinned: false, code: newCode)))
                             if !canContinue {
                                 isInvaildUrl = true
                                 return
