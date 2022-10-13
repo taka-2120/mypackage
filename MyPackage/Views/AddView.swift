@@ -13,6 +13,7 @@ struct AddView: View {
     @ObservedObject private var packageLists = PackageLists.shared
     @State private var newCode = ""
     @State private var isInvaildUrl = false
+    @State private var isExisted = false
     
     var body: some View {
         NavigationView {
@@ -29,6 +30,17 @@ struct AddView: View {
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button(action: {
+                        var matched = false
+                        for package in packageLists.packages {
+                            if package.info.code == newCode {
+                                matched = true
+                            }
+                        }
+                        if matched {
+                            isExisted = true
+                            return
+                        }
+                        
                         if newCode.isEmpty {
                             isInvaildUrl = true
                             return
@@ -51,6 +63,9 @@ struct AddView: View {
         }
         .alert(isPresented: $isInvaildUrl) {
             Alert(title: Text("Error"), message: Text("The tracking number is invaild.\nPlease check it again."), dismissButton: .default(Text("OK")))
+        }
+        .alert(isPresented: $isExisted) {
+            Alert(title: Text("Error"), message: Text("The tracking number is already existed."), dismissButton: .default(Text("OK")))
         }
     }
 }

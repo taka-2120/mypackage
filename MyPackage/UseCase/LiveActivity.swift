@@ -57,7 +57,11 @@ struct LiveActivityActions {
                 )
 
                 do {
-                    await Activity<PackageActivityWidgetAttributes>.activities.first(where: { $0.attributes.id == package.id.uuidString })?.update(using: initialContentState)
+                    if Activity<PackageActivityWidgetAttributes>.activities.count == 0 {
+                        setActivity()
+                    } else {
+                        await Activity<PackageActivityWidgetAttributes>.activities.first(where: { $0.attributes.id == package.id.uuidString })?.update(using: initialContentState)
+                    }
                 } catch let error {
                     print("Error requesting your package delivery Live Activity \(error.localizedDescription)")
                 }
