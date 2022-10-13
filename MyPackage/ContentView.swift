@@ -26,13 +26,7 @@ struct ContentView: View {
                 }
             }
             .refreshable {
-                Task {
-                    let canContinue = await packageLists.readStatusJsonAndCanContinue()
-                    
-                    if canContinue {
-//                        LIVE ACTIVITY MUST BE REFRESHED
-                    }
-                }
+                _refresh()
             }
             .navigationTitle("Packages")
             .toolbar {
@@ -51,16 +45,19 @@ struct ContentView: View {
         }
         .onChange(of: scenePhase) { newPhase in
             if newPhase == .active {
-                Task {
-                    let canContinue = await packageLists.readStatusJsonAndCanContinue()
-                    if (canContinue) {
-//                        LIVE ACTIVITY MUST BE REFRESHED
-//
-//                        LiveActivityActions().setActivity()
-                    }
-                    isFirst = false
-                }
+                _refresh()
             }
+        }
+    }
+    
+    private func _refresh() {
+        Task {
+            let canContinue = await packageLists.readStatusJsonAndCanContinue()
+            
+            if canContinue {
+                await LiveActivityActions().updateActivity()
+            }
+            isFirst = false
         }
     }
 }

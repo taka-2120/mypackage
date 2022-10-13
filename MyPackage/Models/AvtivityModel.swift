@@ -18,4 +18,5 @@ struct PackageActivityWidgetAttributes: ActivityAttributes {
 
     var company: String
     var type: String
+    var id: String
 }

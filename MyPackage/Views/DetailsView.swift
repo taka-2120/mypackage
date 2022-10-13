@@ -107,6 +107,7 @@ struct DetailsView: View {
                 isDialogShown = false
                 
                 // MUST WRITE DISABLE AND CHANGE LIVE ACTIVITY
+
                 
 //                if !pinnedItemAvailability.available {
 //                    packageLists.updatePinState(id: package.id, isPinned: true)

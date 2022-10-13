@@ -68,7 +68,6 @@ class PackageLists: ObservableObject {
         
         if let encoded = try? JSONEncoder().encode(packagesInfo) {
             UserDefaults.standard.set(encoded, forKey: packagesInfoKey)
-            print("CALLED: \(encoded)")
         } else {
             print("Cannot Store the Package Information")
         }
