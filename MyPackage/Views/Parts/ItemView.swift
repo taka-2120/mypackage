@@ -9,26 +9,24 @@ import SwiftUI
 
 struct ItemView: View {
     
-    @Binding var packages: [Package]
-    var i: Int
+    var package: Package
     
     var body: some View {
-        let date = packages[i].response.statusList.last?.date ?? ""
-        let time = packages[i].response.statusList.last?.time ?? "N/A"
-        let isReceived = packages[i].response.statusList.contains(where: {$0.status.contains(received)})
+        let date = package.response?.statusList.last?.date ?? ""
+        let time = package.response?.statusList.last?.time ?? "N/A"
         
-        NavigationLink(destination: DetailsView(package: packages[i])) {
+        NavigationLink(destination: DetailsView(package: package)) {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
-                    Text(packages[i].response.companyNameJp)
+                    Text(package.response?.companyNameJp ?? "N/A")
                         .font(.title2)
                         .fontWeight(.semibold)
-                    if packages[i].info.isPinned {
+                    if package.info.isPinned {
                         Image(systemName: "pin.fill")
                             .foregroundColor(Color(.systemGreen))
                     }
                     Spacer()
-                    Text(packages[i].response.statusList.last?.status ?? notRegistered)
+                    Text(package.response?.statusList.last?.status ?? notRegistered)
                         .font(.title2)
                 }
                 
@@ -40,40 +38,47 @@ struct ItemView: View {
                 }
                 .padding(.bottom)
                 
-                HStack {
-                    if !isReceived {
-                        Waiting()
-                    }
+                if package.response != nil {
+                    let isReceived = package.response!.statusList.contains(where: {$0.status.contains(received)})
+                    let isShipping = package.response!.statusList.contains(where: {$0.status.contains(shipping)})
+                    let isCarrying = package.response!.statusList.contains(where: {$0.status.contains(delivered)})
+                    let isDelivered = package.response!.statusList.contains(where: {$0.status.contains(delivered)})
                     
-                    // First Line
-                    if packages[i].response.statusList.contains(where: {$0.status.contains(shipping)}) {
-                        PassedWay()
-                        if !packages[i].response.statusList.contains(where: {$0.status.contains(carrying)}) {
-                            Carrying()
+                    HStack {
+                        if !isReceived {
+                            Waiting()
                         }
-                    } else {
-                        FutureWay()
-                    }
-                    
-                    // Second Line
-                    if packages[i].response.statusList.contains(where: {$0.status.contains(carrying)}) {
-                        PassedWay()
-                        if !packages[i].response.statusList.contains(where: {$0.status.contains(delivered)}) {
-                            Carrying()
+                        
+                        // First Line
+                        if isShipping {
+                            PassedWay()
+                            if !isCarrying {
+                                Carrying()
+                            }
+                        } else {
+                            FutureWay()
                         }
-                    } else {
-                        FutureWay()
+                        
+                        // Second Line
+                        if isCarrying {
+                            PassedWay()
+                            if !isDelivered {
+                                Carrying()
+                            }
+                        } else {
+                            FutureWay()
+                        }
+                        
+                        // Final Line
+                        if isDelivered {
+                            PassedWay()
+                        } else {
+                            FutureWay()
+                        }
+                        
+                        Image(systemName: "house.fill")
+                            .foregroundColor(Color(.systemOrange))
                     }
-                    
-                    // Final Line
-                    if packages[i].response.statusList.contains(where: {$0.status.contains(delivered)}) {
-                        PassedWay()
-                    } else {
-                        FutureWay()
-                    }
-                    
-                    Image(systemName: "house.fill")
-                        .foregroundColor(Color(.systemOrange))
                 }
             }
             .padding(8)
@@ -84,6 +89,6 @@ struct ItemView: View {
 
 struct ItemView_Previews: PreviewProvider {
     static var previews: some View {
-        ItemView(packages: .constant([]), i: 0)
+        ItemView(package: Package(info: PackageInfo(isPinned: false, code: "")))
     }
 }

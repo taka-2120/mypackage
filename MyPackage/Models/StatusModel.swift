@@ -23,7 +23,7 @@ struct Response: Codable {
     var statusList: [StatusList]
 }
 
-struct PackageInfo {
+struct PackageInfo: Codable {
     var isPinned: Bool
     var code: String
 }
@@ -32,5 +32,5 @@ struct PackageInfo {
 struct Package {
     var id = UUID()
     var info: PackageInfo
-    var response: Response
+    var response: Response?
 }

@@ -11,7 +11,6 @@ import ActivityKit
 struct ContentView: View {
     @Environment(\.scenePhase) var scenePhase
     @ObservedObject private var packageLists = PackageLists.shared
-    @ObservedObject private var pinnedItemAvailability = PinnedItemAvailability.shared
     
     @State private var isAddSheetShown = false
     @State private var isInvaildUrl = false
@@ -20,7 +19,7 @@ struct ContentView: View {
         NavigationView {
             List {
                 ForEach(0 ..< packageLists.packages.count, id: \.self) { i in
-                    ItemView(packages: $packageLists.packages, i: i)
+                    ItemView(package: packageLists.packages[i])
                 }
                 .onDelete { indexSet in
 
@@ -31,9 +30,7 @@ struct ContentView: View {
                     let canContinue = await packageLists.readStatusJsonAndCanContinue()
                     
                     if canContinue {
-                        if pinnedItemAvailability.available {
-                            
-                        }
+//                        LIVE ACTIVITY MUST BE REFRESHED
                     }
                 }
             }
@@ -56,9 +53,12 @@ struct ContentView: View {
             if newPhase == .active {
                 Task {
                     let canContinue = await packageLists.readStatusJsonAndCanContinue()
-                    if (canContinue && pinnedItemAvailability.available) {
-                        LiveActivityActions().setActivity()
+                    if (canContinue) {
+//                        LIVE ACTIVITY MUST BE REFRESHED
+//
+//                        LiveActivityActions().setActivity()
                     }
+                    isFirst = false
                 }
             }
         }

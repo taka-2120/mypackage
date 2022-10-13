@@ -20,27 +20,31 @@ struct LiveActivityActions: _LiveActivityActions {
             let packageLists = PackageLists.shared
             let package = packageLists.packages[index!]
             
-            let packageActivityWidgetAttributes = PackageActivityWidgetAttributes(
-                company: package.response.companyNameJp,
-                type: package.response.itemType
-            )
-
-            let initialContentState = PackageActivityWidgetAttributes.ContentState(
-                statusList: package.response.statusList,
-                date: package.response.statusList.last?.date ?? "",
-                time: package.response.statusList.last?.time ?? "N/A"
-            )
-
-            do {
-                let deliveryActivity = try Activity<PackageActivityWidgetAttributes>.request(
-                    attributes: packageActivityWidgetAttributes,
-                    contentState: initialContentState,
-                    pushType: nil
-                )
+            if package.response != nil {
+                let response = package.response!
                 
-                print("Requested your package delivery Live Activity \(deliveryActivity.id)")
-            } catch (let error) {
-                print("Error requesting your package delivery Live Activity \(error.localizedDescription)")
+                let packageActivityWidgetAttributes = PackageActivityWidgetAttributes(
+                    company: response.companyNameJp,
+                    type: response.itemType
+                )
+
+                let initialContentState = PackageActivityWidgetAttributes.ContentState(
+                    statusList: response.statusList,
+                    date: response.statusList.last?.date ?? "",
+                    time: response.statusList.last?.time ?? "N/A"
+                )
+
+                do {
+                    let deliveryActivity = try Activity<PackageActivityWidgetAttributes>.request(
+                        attributes: packageActivityWidgetAttributes,
+                        contentState: initialContentState,
+                        pushType: nil
+                    )
+                    
+                    print("Requested your package delivery Live Activity \(deliveryActivity.id)")
+                } catch (let error) {
+                    print("Error requesting your package delivery Live Activity \(error.localizedDescription)")
+                }
             }
         }
     }

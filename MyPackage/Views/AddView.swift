@@ -34,8 +34,6 @@ struct AddView: View {
                             return
                         }
                         Task {
-                            UserDefaults.standard.set(packageLists, forKey: "Tap")
-                            
                             let canContinue = await packageLists.readStatusJsonAndCanContinue()
                             if !canContinue {
                                 isInvaildUrl = true

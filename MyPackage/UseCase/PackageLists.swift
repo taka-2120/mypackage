@@ -13,49 +13,96 @@ class PackageLists: ObservableObject {
     private init() {}
     
 //    @Published var codes = ["394993519045"]
-    @Published var packages = [Package(info: PackageInfo(isPinned: false, code: "394993519045"), response: Response(number: 0, itemType: "", companyName: "", companyNameJp: "", statusList: []))]
-    var subscriptions = Set<AnyCancellable>()
+    @Published var packages = [Package]()
     
     func readStatusJsonAndCanContinue() async -> Bool {
+        if isFirst {
+            _restorePackagesInfo()
+        }
         
         for package in packages {
-            let info = package.info
-            let urlStr = "https://trackingjp.work/api/v1/tracking/\(info.code)"
+            let canContinue = await _fetchPackageStatus(package: package)
             
-            guard let url = URL(string: urlStr) else {
-                return false
-            }
-            
-            do {
-                let (data, _) = try await URLSession.shared.data(from: url)
-
-                if let decodedResponse = try? JSONDecoder().decode(Response.self, from: data) {
-                    updateResponse(id: package.id, newResponse: decodedResponse)
-                    
-                    if package.info.isPinned {
-                        PinnedItemAvailability.shared.available = true
-                    }
-                }
-            } catch {
+            if !canContinue {
                 return false
             }
         }
+        _storePackagesInfo()
+        
         return true
     }
     
-    func updateResponse(id: UUID, newResponse: Response) {
+    func addPackageAndCanContinue(package: Package) async -> Bool {
+        let canContinue = await _fetchPackageStatus(package: package)
+        
+        if canContinue {
+            _storePackagesInfo()
+        }
+        
+        return canContinue
+    }
+    
+    private func _restorePackagesInfo() {
+        packages.removeAll()
+        
+        do {
+            let storedObjItem = UserDefaults.standard.object(forKey: packagesInfoKey)
+            let restoredPackagesInfo = try JSONDecoder().decode([PackageInfo].self, from: storedObjItem as! Data)
+            
+            for packageInfo in restoredPackagesInfo {
+                packages.append(Package(info: packageInfo, response: nil))
+            }
+        } catch let error {
+            print(error)
+            return
+        }
+    }
+    
+    private func _storePackagesInfo() {
+        let packagesInfo = packages.map({$0.info})
+        
+        if let encoded = try? JSONEncoder().encode(packagesInfo) {
+            UserDefaults.standard.set(encoded, forKey: packagesInfoKey)
+            print("CALLED: \(encoded)")
+        } else {
+            print("Cannot Store the Package Information")
+        }
+    }
+    
+    private func _fetchPackageStatus(package: Package) async -> Bool {
+        let urlStr = "https://trackingjp.work/api/v1/tracking/\(package.info.code)"
+        
+        guard let url = URL(string: urlStr) else {
+            return false
+        }
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+
+            if let decodedResponse = try? JSONDecoder().decode(Response.self, from: data) {
+                _updateResponse(id: package.id, newResponse: decodedResponse)
+            }
+            
+            return true
+        } catch {
+            return false
+        }
+    }
+    
+    private func _updateResponse(id: UUID, newResponse: Response) {
         let index = packages.firstIndex(where: {$0.id == id})
         
         if index != nil {
             packages[index!].response = newResponse
         }
-      }
+    }
     
     func updatePinState(id: UUID, isPinned: Bool) {
         let index = packages.firstIndex(where: {$0.id == id})
         
         if index != nil {
             packages[index!].info.isPinned = isPinned
+            _storePackagesInfo()
         }
     }
 }

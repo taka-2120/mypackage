@@ -10,3 +10,8 @@ let received = "受付"
 let shipping = "発送"
 let carrying = "配達"
 let delivered = "完了"
+
+// Keys
+let packagesInfoKey = "packagesInfoKey"
+
+var isFirst = true
