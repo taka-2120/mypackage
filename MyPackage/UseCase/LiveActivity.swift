@@ -8,8 +8,6 @@
 import ActivityKit
 
 struct LiveActivityActions {
-    var deliveryActivity: Activity<PackageActivityWidgetAttributes>? = nil
-    
     func setActivity() {
         let packageLists = PackageLists.shared
         let packages = packageLists.packages
@@ -31,13 +29,13 @@ struct LiveActivityActions {
                 )
 
                 do {
-                    let _ = try Activity<PackageActivityWidgetAttributes>.request(
+                    let deliveryActivity = try Activity<PackageActivityWidgetAttributes>.request(
                         attributes: packageActivityWidgetAttributes,
                         contentState: initialContentState,
                         pushType: nil
                     )
                     
-                    print("Requested your package delivery Live Activity \(deliveryActivity!.id)")
+                    print("Requested your package delivery Live Activity \(deliveryActivity.id)")
                 } catch let error {
                     print("Error requesting your package delivery Live Activity \(error.localizedDescription)")
                 }
@@ -67,27 +65,13 @@ struct LiveActivityActions {
         }
     }
     
-    func disableActivity(package: Package) {
-        if package.response != nil {
-            let initialContentState = PackageActivityWidgetAttributes.ContentState(
-                statusList: package.response!.statusList,
-                date: package.response!.statusList.last?.date ?? "",
-                time: package.response!.statusList.last?.time ?? "N/A"
-            )
-
-            Task {
-                await deliveryActivity?.end(using: initialContentState)
-            }
-        }
-    }
-    
-    static func endAllActivities() async {
+    func endAllActivities() async {
         for activity in Activity<PackageActivityWidgetAttributes>.activities {
             await activity.end(dismissalPolicy: .immediate)
         }
     }
 
-    static func endActivity(_ id: String) async {
+    func endActivity(id: String) async {
         await Activity<PackageActivityWidgetAttributes>.activities.first(where: { $0.attributes.id == id })?.end(dismissalPolicy: .immediate)
     }
     

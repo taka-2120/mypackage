@@ -102,23 +102,18 @@ struct DetailsView: View {
     var existsAlert: Alert {
         Alert(
             title: Text("Error"),
-            message: Text("Live Activity is already enabled."),
-            dismissButton: .default(Text("OK"), action: {
+            message: Text("Live Activity is already enabled. Do you want to disable this Live Activity?"),
+            primaryButton: .default(Text("OK"), action: {
+                Task {
+                    isDialogShown = false
+                    
+                    // MUST WRITE DISABLE AND CHANGE LIVE ACTIVITY
+                    await LiveActivityActions().endActivity(id: package.id.uuidString)
+                    packageLists.updatePinState(id: package.id, isPinned: false)
+                }
+            }),
+            secondaryButton: .destructive(Text("Cancel"), action: {
                 isDialogShown = false
-                
-                // MUST WRITE DISABLE AND CHANGE LIVE ACTIVITY
-
-                
-//                if !pinnedItemAvailability.available {
-//                    packageLists.updatePinState(id: package.id, isPinned: true)
-//                    pinnedItemAvailability.available = true
-//
-//                    // Set Live Activity
-//                    LiveActivityActions().setActivity()
-//                }
-//            }),
-//            secondaryButton: .destructive(Text("Cancel"), action: {
-//                isDialogShown = false
             })
         )
     }
