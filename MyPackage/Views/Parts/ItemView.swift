@@ -41,7 +41,7 @@ struct ItemView: View {
                 if package.response != nil {
                     let isReceived = package.response!.statusList.contains(where: {$0.status.contains(received)})
                     let isShipping = package.response!.statusList.contains(where: {$0.status.contains(shipping)})
-                    let isCarrying = package.response!.statusList.contains(where: {$0.status.contains(delivered)})
+                    let isCarrying = package.response!.statusList.contains(where: {$0.status.contains(carrying)})
                     let isDelivered = package.response!.statusList.contains(where: {$0.status.contains(delivered)})
                     
                     HStack {

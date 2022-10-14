@@ -108,7 +108,7 @@ struct DetailsView: View {
                     isDialogShown = false
                     
                     // MUST WRITE DISABLE AND CHANGE LIVE ACTIVITY
-                    await LiveActivityActions().endActivity(id: package.id.uuidString)
+                    await LiveActivityActions().endActivity(id: package.id)
                     packageLists.updatePinState(id: package.id, isPinned: false)
                 }
             }),

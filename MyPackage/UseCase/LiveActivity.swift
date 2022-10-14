@@ -5,6 +5,7 @@
 //  Created by Yu Takahashi on 10/12/22.
 //
 
+import Foundation
 import ActivityKit
 
 struct LiveActivityActions {
@@ -13,7 +14,7 @@ struct LiveActivityActions {
         let packages = packageLists.packages
         
         for package in packages {
-            if package.response != nil {
+            if package.response != nil && package.info.isPinned {
                 let response = package.response!
                 
                 let packageActivityWidgetAttributes = PackageActivityWidgetAttributes(
@@ -47,7 +48,7 @@ struct LiveActivityActions {
         let packageLists = PackageLists.shared
         
         for package in packageLists.packages {
-            if package.response != nil {
+            if package.response != nil && package.info.isPinned {
                 let response = package.response!
                 
                 let initialContentState = PackageActivityWidgetAttributes.ContentState(
@@ -55,15 +56,9 @@ struct LiveActivityActions {
                     date: response.statusList.last?.date ?? "",
                     time: response.statusList.last?.time ?? "N/A"
                 )
-
-                do {
-                    if Activity<PackageActivityWidgetAttributes>.activities.count == 0 {
-                        setActivity()
-                    } else {
-                        await Activity<PackageActivityWidgetAttributes>.activities.first(where: { $0.attributes.id == package.id.uuidString })?.update(using: initialContentState)
-                    }
-                } catch let error {
-                    print("Error requesting your package delivery Live Activity \(error.localizedDescription)")
+                
+                if Activity<PackageActivityWidgetAttributes>.activities.count != 0 {
+                    await Activity<PackageActivityWidgetAttributes>.activities.first(where: { $0.attributes.id == package.id.uuidString })?.update(using: initialContentState)
                 }
             }
         }
@@ -75,8 +70,8 @@ struct LiveActivityActions {
         }
     }
 
-    func endActivity(id: String) async {
-        await Activity<PackageActivityWidgetAttributes>.activities.first(where: { $0.attributes.id == id })?.end(dismissalPolicy: .immediate)
+    func endActivity(id: UUID) async {
+        await Activity<PackageActivityWidgetAttributes>.activities.first(where: { $0.attributes.id == id.uuidString })?.end(dismissalPolicy: .immediate)
     }
     
     func identifyPinnedIndex() -> Int? {
