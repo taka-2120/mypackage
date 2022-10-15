@@ -9,37 +9,32 @@ import Foundation
 import ActivityKit
 
 struct LiveActivityActions {
-    func setActivity() {
-        let packageLists = PackageLists.shared
-        let packages = packageLists.packages
-        
-        for package in packages {
-            if package.response != nil && package.info.isPinned {
-                let response = package.response!
+    func setActivity(package: Package) {
+        if package.response != nil {
+            let response = package.response!
+            
+            let packageActivityWidgetAttributes = PackageActivityWidgetAttributes(
+                company: response.companyNameJp,
+                type: response.itemType,
+                id: package.id.uuidString
+            )
+
+            let initialContentState = PackageActivityWidgetAttributes.ContentState(
+                statusList: response.statusList,
+                date: response.statusList.last?.date ?? "",
+                time: response.statusList.last?.time ?? "N/A"
+            )
+
+            do {
+                let deliveryActivity = try Activity<PackageActivityWidgetAttributes>.request(
+                    attributes: packageActivityWidgetAttributes,
+                    contentState: initialContentState,
+                    pushType: nil
+                )
                 
-                let packageActivityWidgetAttributes = PackageActivityWidgetAttributes(
-                    company: response.companyNameJp,
-                    type: response.itemType,
-                    id: package.id.uuidString
-                )
-
-                let initialContentState = PackageActivityWidgetAttributes.ContentState(
-                    statusList: response.statusList,
-                    date: response.statusList.last?.date ?? "",
-                    time: response.statusList.last?.time ?? "N/A"
-                )
-
-                do {
-                    let deliveryActivity = try Activity<PackageActivityWidgetAttributes>.request(
-                        attributes: packageActivityWidgetAttributes,
-                        contentState: initialContentState,
-                        pushType: nil
-                    )
-                    
-                    print("Requested your package delivery Live Activity \(deliveryActivity.id)")
-                } catch let error {
-                    print("Error requesting your package delivery Live Activity \(error.localizedDescription)")
-                }
+                print("Requested your package delivery Live Activity \(deliveryActivity.id)")
+            } catch let error {
+                print("Error requesting your package delivery Live Activity \(error.localizedDescription)")
             }
         }
     }

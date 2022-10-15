@@ -46,12 +46,15 @@ struct AddView: View {
                             return
                         }
                         Task {
-                            let canContinue = await packageLists.addPackageAndCanContinue(package: Package(info: PackageInfo(isPinned: false, code: newCode)))
-                            if !canContinue {
+                            let result = await packageLists.addPackageAndCanContinue(package: Package(info: PackageInfo(isPinned: false, code: newCode)))
+                            if !result.0 {
                                 isInvaildUrl = true
                                 return
                             }
-                            
+                            let package = packageLists.getPackageFromId(result.1)
+                            if package != nil {
+                                LiveActivityActions().setActivity(package: package!)
+                            }
                             presentationMode.wrappedValue.dismiss()
                             newCode = ""
                         }

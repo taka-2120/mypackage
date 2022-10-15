@@ -91,7 +91,7 @@ struct DetailsView: View {
                 packageLists.updatePinState(id: package.id, isPinned: true)
                 
                 // Set Live Activity
-                LiveActivityActions().setActivity()
+                LiveActivityActions().setActivity(package: package)
             }),
             secondaryButton: .destructive(Text("Cancel"), action: {
                 isDialogShown = false

@@ -32,7 +32,7 @@ class PackageLists: ObservableObject {
         return true
     }
     
-    func addPackageAndCanContinue(package: Package) async -> Bool {
+    func addPackageAndCanContinue(package: Package) async -> (Bool, UUID) {
         packages.append(package)
         
         let canContinue = await _fetchPackageStatus(package: package)
@@ -41,7 +41,16 @@ class PackageLists: ObservableObject {
             _storePackagesInfo()
         }
         
-        return canContinue
+        return (canContinue, package.id)
+    }
+    
+    func getPackageFromId(_ id: UUID) -> Package? {
+        for package in packages {
+            if package.id == id {
+                return package
+            }
+        }
+        return nil
     }
     
     private func _restorePackagesInfo() {
